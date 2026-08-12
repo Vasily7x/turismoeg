@@ -662,7 +662,8 @@ function attachHandlers(s){
   }
 
   if(s==='review'){
-    const as=document.getElementById('acceptSwitch'); if(as) as.onclick=()=>{ state.accept=!state.accept; window.scrollTo({top:0, behavior:'smooth'}); render(); };
+    window.scrollTo({top:0, behavior:'smooth'});
+    const as=document.getElementById('acceptSwitch'); if(as) as.onclick=()=>{ state.accept=!state.accept;  render(); };
   }
 }
 
