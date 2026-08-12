@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>International Driving Permit — Smart Application</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=Dancing+Script:wght@600&family=Cairo:wght@500;600;700&display=swap');
+
+:root{
+  --ink:#0B1420; --ink-2:#111C2B; --paper:#F7F4EC; --paper-2:#FDFCF8;
+  --teal:#0F6E5E; --teal-deep:#0A4B40; --cyan:#29D3C7; --violet:#8B6FF0;
+  --amber:#F2A63B; --ink-soft:#5B6472; --line:#DAD5C6; --success:#2E9E63;
+  --danger:#C6473F; --idblue:#1D63A6; --idblue-2:#1794C9;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--ink); font-family:'Inter',sans-serif; color:var(--paper); -webkit-font-smoothing:antialiased;}
+body[dir="rtl"]{font-family:'Cairo',sans-serif;}
+body[dir="rtl"] .step-heading, body[dir="rtl"] .idp-title, body[dir="rtl"] .idcard-title-en{font-family:'Cairo',sans-serif;}
+.app{max-width:900px; margin:0 auto; padding:28px 20px 80px;
+  background:radial-gradient(circle at 15% 0%, rgba(139,111,240,0.14), transparent 45%),
+    radial-gradient(circle at 85% 10%, rgba(41,211,199,0.12), transparent 40%), var(--ink);
+  min-height:100vh; position:relative;}
+
+.brandbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand-mark{width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,var(--cyan),var(--violet)); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.brand-mark svg{width:19px; height:19px;}
+.brand-name{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px;}
+.brand-sub{font-size:11px; color:#8B93A3; letter-spacing:1.5px; text-transform:uppercase;}
+.lang-pill{font-size:12px; color:var(--paper); border:1px solid #263244; padding:7px 14px; border-radius:20px; cursor:pointer; background:#141F30; font-weight:600;}
+.lang-pill:hover{border-color:var(--cyan);}
+
+h1.title{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; line-height:1.3; margin:6px 0 4px;}
+body[dir="rtl"] h1.title{font-family:'Cairo',sans-serif; font-size:23px;}
+p.subtitle{color:#8B93A3; font-size:14px; margin:0 0 24px; max-width:560px;}
+
+.idcard-wrap{margin:16px 0 6px;}
+.idcard{
+  border-radius:16px; overflow:hidden; background:var(--paper-2);
+  border:1px solid #23405a; box-shadow:0 20px 44px rgba(0,0,0,0.4); position:relative;
+  direction:ltr; text-align:left;
+}
+.idcard-header{background:linear-gradient(115deg, var(--idblue), var(--idblue-2)); padding:14px 16px 10px; position:relative; overflow:hidden;}
+.idcard-header::after{content:""; position:absolute; top:-60%; right:-6%; width:180px; height:180px; border-radius:50%; background:conic-gradient(from 90deg, var(--cyan), var(--violet), var(--cyan)); filter:blur(30px); opacity:0.25;}
+.idcard-htop{display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1;}
+.idcard-titles{max-width:76%;}
+.idcard-title-en{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15.5px; letter-spacing:1.5px; color:#fff; line-height:1.35;}
+.idcard-title-sub{font-size:9.5px; color:#DCEBF7; letter-spacing:0.5px; margin-top:2px;}
+.idcard-seal{width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.idcard-seal svg{width:26px; height:26px;}
+.idcard-flags{display:flex; gap:2px; padding:8px 12px; background:rgba(255,255,255,0.08);}
+.idcard-flag{flex:1; height:14px; border-radius:2px; opacity:0.92;}
+.idcard-transbar{background:var(--ink); color:#fff; font-size:10px; letter-spacing:2.5px; font-weight:600; text-align:center; padding:6px;}
+.idcard-body{display:flex; gap:14px; padding:16px; background:var(--paper-2); color:var(--ink);}
+.idcard-photo{width:92px; height:112px; border-radius:8px; background:#E7E2D4; border:1px solid var(--line); overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center;}
+.idcard-photo img{width:100%; height:100%; object-fit:cover;}
+.idcard-info{flex:1; min-width:0;}
+.idcard-lbl{font-size:8.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--idblue); font-weight:700; margin-top:7px;}
+.idcard-lbl:first-child{margin-top:0;}
+.idcard-val{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#1B2430; line-height:1.25; word-break:break-word;}
+.idcard-val.small{font-size:12.5px; font-weight:600;}
+.idcard-row3{display:flex; gap:18px;}
+.idcard-footer{display:flex; align-items:center; justify-content:space-between; padding:8px 16px 12px; background:var(--paper-2);}
+.idcard-barcode{height:26px;}
+.idcard-license-no{font-family:'IBM Plex Mono',monospace; font-size:11px; color:#3B4451; margin-top:3px;}
+.idcard-validbar{background:var(--idblue); color:#fff; text-align:center; font-size:11px; font-weight:600; padding:8px;}
+.idcard-signature-typed{font-family:'Dancing Script',cursive; font-size:22px; font-weight:600; color:#1B2430; line-height:1;}
+.idcard-signature-img{height:32px; max-width:150px; object-fit:contain; display:block;}
+.idcard-signature-empty{font-size:11px; color:#9AA3AF; font-style:italic;}
+.idcard-note{font-size:11px; color:#8B93A3; margin:8px 2px 18px;}
+
+.rail{position:relative; margin:6px 0 30px;}
+.rail-line{position:absolute; top:15px; left:20px; right:20px; height:2px; background:#233043;}
+.rail-line-fill{position:absolute; top:0; left:0; height:100%; background:linear-gradient(90deg,var(--cyan),var(--violet)); transition:width .35s ease;}
+body[dir="rtl"] .rail-line-fill{left:auto; right:0; background:linear-gradient(270deg,var(--cyan),var(--violet));}
+.rail-steps{display:flex; justify-content:space-between; position:relative;}
+.rail-step{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; background:none; border:none; color:inherit; font-family:inherit;}
+.rail-dot{width:32px; height:32px; border-radius:50%; background:var(--ink-2); border:2px solid #263244; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8B93A3; position:relative; z-index:1;}
+.rail-step.done .rail-dot{background:var(--teal); border-color:var(--cyan); color:var(--paper);}
+.rail-step.active .rail-dot{background:linear-gradient(135deg,var(--cyan),var(--violet)); border-color:var(--paper); color:#0B1420; font-weight:700;}
+.rail-step-label{font-size:10.5px; color:#8B93A3; text-align:center; max-width:64px;}
+.rail-step.active .rail-step-label{color:var(--paper); font-weight:600;}
+
+.panel{background:var(--paper); color:var(--ink); border-radius:20px; padding:26px 24px 24px; box-shadow:0 20px 50px rgba(0,0,0,0.35);}
+.step-eyebrow{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); font-weight:600;}
+.step-heading{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; margin:4px 0 3px;}
+.step-desc{font-size:13.5px; color:var(--ink-soft); margin:0 0 20px;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12.5px; font-weight:600; margin-bottom:6px; color:#2B3440;}
+.field .req{color:var(--danger);}
+.field input[type=text], .field input[type=email], .field input[type=tel], .field input[type=date], .field input[type=number], .field select{
+  width:100%; padding:11px 12px; border-radius:10px; border:1.5px solid var(--line); background:var(--paper-2); font-family:inherit; font-size:14px; color:var(--ink);}
+.field input:focus, .field select:focus{outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(15,110,94,0.14);}
+.hint{font-size:11.5px; color:#8B8F98; margin-top:5px;}
+.chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+.chip{padding:9px 14px; border-radius:20px; border:1.5px solid var(--line); background:var(--paper-2); font-size:13px; cursor:pointer; font-weight:500; color:var(--ink-soft); user-select:none;}
+.chip.selected{background:var(--teal); border-color:var(--teal); color:#fff;}
+.multi-hint{font-size:11px; color:#8B8F98; margin-top:6px;}
+.switch-row{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:var(--paper-2); border:1.5px solid var(--line); border-radius:12px; margin-bottom:16px; gap:10px;}
+.switch-row span{font-size:13.5px; font-weight:500;}
+.switch{width:40px; height:23px; border-radius:14px; background:#D9D4C4; position:relative; cursor:pointer; flex-shrink:0;}
+.switch.on{background:var(--teal);}
+.switch::after{content:""; position:absolute; top:2px; left:2px; width:19px; height:19px; border-radius:50%; background:#fff; transition:left .18s;}
+.switch.on::after{left:19px;}
+body[dir="rtl"] .switch::after{left:auto; right:2px; transition:right .18s;}
+body[dir="rtl"] .switch.on::after{right:19px;}
+.upload-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:8px;}
+.upload-tile{border:2px dashed var(--line); border-radius:14px; padding:16px 12px; text-align:center; background:var(--paper-2); cursor:pointer; position:relative;}
+.upload-tile:hover{border-color:var(--teal);}
+.upload-tile.filled{border-style:solid; border-color:var(--teal);}
+.upload-tile input{display:none;}
+.upload-icon{width:30px; height:30px; margin:0 auto 8px; color:var(--teal);}
+.upload-title{font-size:12.5px; font-weight:600; color:#2B3440;}
+.upload-sub{font-size:10.5px; color:#8B8F98; margin-top:2px;}
+.upload-thumb{width:52px; height:52px; border-radius:8px; object-fit:cover; margin:0 auto 8px; display:block;}
+.upload-check{position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%; background:var(--success); display:flex; align-items:center; justify-content:center;}
+body[dir="rtl"] .upload-check{right:auto; left:8px;}
+.upload-check svg{width:11px; height:11px; color:#fff;}
+.sig-tabs{display:flex; gap:8px; margin-bottom:10px;}
+.sig-tab{padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer; border:1.5px solid var(--line); background:var(--paper-2); color:var(--ink-soft);}
+.sig-tab.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+.sig-canvas-wrap{border:1.5px solid var(--line); border-radius:12px; background:#fff; position:relative;}
+canvas{display:block; width:100%; height:150px; border-radius:12px; touch-action:none;}
+.sig-clear{position:absolute; top:8px; right:8px; font-size:11px; padding:5px 10px; border-radius:8px; background:var(--paper); border:1px solid var(--line); cursor:pointer; color:var(--ink-soft);}
+.sig-typed input{font-family:'Dancing Script',cursive; font-size:24px; padding:18px 14px;}
+.plan-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:18px;}
+.plan-card{border:1.5px solid var(--line); border-radius:12px; padding:13px 14px; cursor:pointer; background:var(--paper-2);}
+.plan-card.selected{border-color:var(--teal); background:#EAF4F0; box-shadow:0 0 0 2px rgba(15,110,94,0.18);}
+.plan-years{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px;}
+.plan-price{font-family:'IBM Plex Mono',monospace; font-size:15px; color:var(--teal-deep); margin-top:4px; font-weight:600;}
+.summary-box{background:var(--ink); color:var(--paper); border-radius:14px; padding:18px 18px 14px; margin-top:6px;}
+.summary-row{display:flex; justify-content:space-between; font-size:13px; padding:6px 0; color:#B7BFCA;}
+.summary-row.total{border-top:1px solid #263244; margin-top:6px; padding-top:12px; font-size:15px; color:#fff; font-weight:600;}
+.summary-row.total span:last-child{font-family:'IBM Plex Mono',monospace; color:var(--cyan);}
+.nav-row{display:flex; justify-content:space-between; align-items:center; margin-top:22px; gap:10px;}
+.btn{font-family:inherit; font-weight:600; font-size:14px; padding:12px 22px; border-radius:12px; border:none; cursor:pointer;}
+.btn-primary{background:linear-gradient(120deg,var(--teal),var(--teal-deep)); color:#fff;}
+.btn-primary:hover{filter:brightness(1.08);}
+.btn-ghost{background:none; color:var(--ink-soft); border:1.5px solid var(--line);}
+.btn-primary:disabled{opacity:0.45; cursor:not-allowed;}
+.save-note{font-size:11px; color:#8B8F98; display:flex; align-items:center; gap:5px;}
+.save-note svg{width:12px; height:12px; color:var(--success);}
+.success-wrap{text-align:center; padding:20px 6px 6px;}
+.success-icon{width:60px; height:60px; border-radius:50%; background:#EAF4F0; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;}
+.success-icon svg{width:28px; height:28px; color:var(--teal);}
+.ref-code{font-family:'IBM Plex Mono',monospace; font-size:17px; background:var(--ink); color:var(--cyan); padding:10px 16px; border-radius:10px; display:inline-block; margin:14px 0; direction:ltr;}
+
+@media(max-width:640px){
+  .grid2, .upload-grid, .plan-grid{grid-template-columns:1fr;}
+  .rail-step-label{display:none;}
+  .idcard-body{flex-direction:column; align-items:flex-start;}
+  .idcard-photo{width:100%; height:140px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brandbar">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#0B1420" stroke-width="2"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13M3 13v5a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-5M3 13h18"/></svg></div>
+      <div><div class="brand-name" id="brandName">Turismoeg IDP</div><div class="brand-sub" id="brandSub">Smart driver identity issuance</div></div>
+    </div>
+    <button class="lang-pill" id="langToggle">EN / عربي</button>
+  </div>
+
+  <h1 class="title" id="pageTitle">International Driving Permit —  Application</h1>
+  <p class="subtitle" id="pageSubtitle">One step at a time. Your permit card preview appears at the final review step.</p>
+
+  <div class="rail"><div class="rail-line"><div class="rail-line-fill" id="railFill" style="width:0%"></div></div><div class="rail-steps" id="railSteps"></div></div>
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+const I18N = {
+  en: {
+    brandName:'Turismoeg IDP', brandSub:'Smart identity issuance', langToggle:'EN / عربي',
+    title:'International Driving Permit — Smart Application',
+    subtitle:'One step at a time. Your permit card preview appears at the final review step.',
+    steps:['Documents','Your details','Contact & shipping','Plan & price','Review & submit'],
+    stepEyebrow:n=>`Step ${n} of 5`,
+    docsHeading:'Upload your documents', docsDesc:'Tap a tile, snap or choose a photo.',
+    idPhotoTitle:'Passport-style photo', idPhotoSub:'JPG or PNG, under 20MB',
+    licensePhotoTitle:'Local license photo', licensePhotoSub:'Both sides if needed',
+    passportPhotoTitle:'Passport photo', passportPhotoSub:'Info page', uploadedReplace:'Uploaded — tap to replace',
+    signatureLabel:'Signature', drawIt:'Draw it', typeIt:'Type it',
+    sigDrawHint:'Use your finger or mouse to sign inside the box.', sigTypeHint:'We\'ll render this as your signature on the permit.',
+    clear:'Clear', typeYourName:'Type your full name',
+    licenseHeading:'Your details', licenseDesc:'These details will build your permit ID card, shown for review at the last step.',
+    licenseNumberLabel:'Local driver license number', licenseNumberPh:'e.g. 4471829',
+    fullNameLabel:'Full name', fullNamePh:'As shown on your license',
+    residenceAddressLabel:'Residence address', residenceAddressPh:'Street, city',
+    countryIssueLabel:'Country of local license (country of issue)', countryIssueHint:'This will show on your permit card as the permit\'s country of issue.',
+    birthCountryLabel:'Country of birth', birthDateLabel:'Date of birth', genderLabel:'Gender',
+    heightLabel:'Height (cm)', eyeColorLabel:'Eye color', categoriesLabel:'License categories', categoriesHint:'Tap all categories that apply — you can select more than one.',
+    selectCountry:'Select country', select:'Select',
+    contactHeading:'Contact & shipping', contactDesc:'Flip the switch below and we\'ll reuse your residence address — no retyping.',
+    contactMethodLabel:'Preferred contact method',
+    emailLabel:'Email', emailPh:'you@example.com', phoneLabel:'Phone', phonePh:'+20 100 000 0000',
+    shipSameLabel:'Ship to my residence address',
+    shipAddressLabel:'Shipping address', shipCountryLabel:'Shipping country',
+    usingAddress:a=>`Using: ${a}`, fillResidenceHint:'— fill in your residence address in step 2 —',
+    planHeading:'Plan & price', planDesc:'Pick validity and shipping speed — your total updates live.',
+    validityLabel:'Permit validity', shippingLabel:'Shipping speed',
+    urgentLabel:'Urgent processing — ready in 7 business days (+$25)', voucherLabel:'I have a voucher code', voucherPh:'Enter code',
+    paymentLabel:'Payment',
+    permitLine:l=>`Permit (${l})`, shippingLine:'Shipping', urgentLine:'Urgent processing', voucherLine:'Voucher SAVE10',
+    dueNowHalf:'Due now (50%)', payableOffice:'Payable at our office', totalDue:'Total due',
+    officeNote:'No online payment needed — settle this in person when you visit our office.',
+    reviewHeading:'Review & submit', reviewDesc:'Here is your permit card preview. Check it, then accept the conditions to submit.',
+    editDocs:'Edit documents', editDetails:'Edit details', editContact:'Edit contact', editPlan:'Edit plan',
+    sendingTo:(e,p)=>`Confirmation will be sent to ${e} · ${p}`,
+    officialNote:'Shown left-to-right — international permits are printed in Latin script regardless of your app language.',
+    acceptLabel:'I accept the terms and conditions',
+    back:'Back', continueLabel:'Continue', submit:'Submit application', progressSaved:'Progress saved',
+    successHeading:'Application received', successDesc:e=>`A confirmation email is on its way to ${e}, and our team has been notified to start processing.`,
+    officeSuccessNote:' Please bring payment to our office to complete processing.',
+    keepRef:'Keep this reference number — you can use it to track your permit status.',
+    cardTitle:'INTERNATIONAL DRIVER\'S LICENSE', cardSub:'Translation of foreign driver license', translationBar:'TRANSLATION OF FOREIGN DRIVER LICENSE',
+    fullNameAddress:'Full name & residence address', countryBirth:'Country of birth', dob:'Date of birth', sex:'Sex', hgt:'Hgt', eyes:'Eyes', categories:'Categories', signature:'Signature', validDate:'VALID DATE',
+    pending:'pending', countryIssuePending:'Country of issue pending',
+    validityLabels:{'1y':'1 year','2y':'2 years','3y':'3 years','5y':'5 years','10y':'10 years'},
+    shippingLabels:{standard:'Standard · 15–20 business days', fast:'Fast · 12–15 business days', express:'Express · 8–12 business days', us_standard:'Standard shipping · 15–20 business days', intl_express:'Express shipping · 8–12 business days'},
+    licenseTypeLabels:{A:'A — Motorcycle', B:'B — Passenger car', C:'C — Truck over 7,700 lbs', D:'D — Vehicle over 8 seats', E:'E — Appeal B, C or D with trailer'},
+    eyeColorLabels:{Black:'Black', Brown:'Brown', Blue:'Blue', Green:'Green', Hazel:'Hazel', Gray:'Gray'},
+    genderLabels:{Male:'Male', Female:'Female'},
+    contactMethodLabels:{email:'Email', phone:'Phone', whatsapp:'Whatsapp'},
+    paymentLabels:{full:'Full payment', half:'50% down payment', office:'Pay at office'}
+  },
+  ar: {
+    brandName:'توريزم إي جي — رخصة دولية', brandSub:'إصدار هوية قيادة ذكي', langToggle:'EN / عربي',
+    title:'رخصة القيادة الدولية — طلب ',
+    subtitle:'خطوة بخطوة. معاينة كارت رخصتك بتظهر في آخر خطوة المراجعة.',
+    steps:['المستندات','بياناتك','التواصل والشحن','الخطة والسعر','المراجعة والإرسال'],
+    stepEyebrow:n=>`الخطوة ${n} من 5`,
+    docsHeading:'ارفع مستنداتك', docsDesc:'دوس على المربع، اختار صورة، .',
+    idPhotoTitle:'صورة شخصية', idPhotoSub:'JPG أو PNG، أقل من 20 ميجا',
+    licensePhotoTitle:'صورة الرخصة المحلية', licensePhotoSub:'الوجهين لو محتاج',
+    passportPhotoTitle:'صورة الباسبور', passportPhotoSub:'صفحة البيانات', uploadedReplace:'تم الرفع — دوس للتغيير',
+    signatureLabel:'التوقيع', drawIt:'ارسم', typeIt:'اكتب',
+    sigDrawHint:'استخدم إصبعك أو الماوس عشان توقّع جوه المربع.', sigTypeHint:'هنحوّل ده لتوقيع على الرخصة.',
+    clear:'مسح', typeYourName:'اكتب اسمك بالكامل',
+    licenseHeading:'بياناتك', licenseDesc:'البيانات دي هتبني كارت رخصتك، وهتظهر للمراجعة في آخر خطوة.',
+    licenseNumberLabel:'رقم الرخصة المحلية', licenseNumberPh:'مثال: 4471829',
+    fullNameLabel:'الاسم بالكامل', fullNamePh:'زي ما هو مكتوب في رخصتك',
+    residenceAddressLabel:'عنوان الإقامة', residenceAddressPh:'الشارع، المدينة',
+    countryIssueLabel:'بلد الرخصة المحلية (بلد الإصدار)', countryIssueHint:'ده هيظهر على كارت رخصتك كبلد إصدار الرخصة.',
+    birthCountryLabel:'بلد الميلاد', birthDateLabel:'تاريخ الميلاد', genderLabel:'النوع',
+    heightLabel:'الطول (سم)', eyeColorLabel:'لون العين', categoriesLabel:'فئات الرخصة', categoriesHint:'دوس على كل الفئات المناسبة — تقدر تختار أكتر من واحدة.',
+    selectCountry:'اختر الدولة', select:'اختر',
+    contactHeading:'التواصل والشحن', contactDesc:'فعّل المفتاح تحت وهنستخدم عنوان إقامتك تلقائيًا — من غير ما تكتبه تاني.',
+    contactMethodLabel:'طريقة التواصل المفضّلة',
+    emailLabel:'الإيميل', emailPh:'you@example.com', phoneLabel:'رقم التليفون', phonePh:'+20 100 000 0000',
+    shipSameLabel:'اشحن على عنوان إقامتي',
+    shipAddressLabel:'عنوان الشحن', shipCountryLabel:'دولة الشحن',
+    usingAddress:a=>`هيتم الاستخدام: ${a}`, fillResidenceHint:'— اكتب عنوان إقامتك في الخطوة التانية —',
+    planHeading:'الخطة والسعر', planDesc:'اختار مدة الصلاحية وسرعة الشحن — الإجمالي بيتحدث لحظيًا.',
+    validityLabel:'مدة صلاحية الرخصة', shippingLabel:'سرعة الشحن',
+    urgentLabel:'معالجة مستعجلة — جاهزة خلال 7 أيام عمل (+25$)', voucherLabel:'عندي كود خصم', voucherPh:'أدخل الكود',
+    paymentLabel:'طريقة الدفع',
+    permitLine:l=>`الرخصة (${l})`, shippingLine:'الشحن', urgentLine:'معالجة مستعجلة', voucherLine:'كود الخصم SAVE10',
+    dueNowHalf:'مطلوب دلوقتي (50%)', payableOffice:'يُدفع في المكتب', totalDue:'الإجمالي المطلوب',
+    officeNote:'مفيش دفع أونلاين مطلوب — هتدفع شخصيًا لما تزور المكتب.',
+    reviewHeading:'المراجعة والإرسال', reviewDesc:'ده كارت رخصتك. راجعه، وبعدين وافق على الشروط عشان ترسل الطلب.',
+    editDocs:'تعديل المستندات', editDetails:'تعديل البيانات', editContact:'تعديل التواصل', editPlan:'تعديل الخطة',
+    sendingTo:(e,p)=>`هيتبعت التأكيد على ${e} · ${p}`,
+    officialNote:'الكارت بيتعرض من الشمال لليمين — الرخص الدولية بتتطبع بحروف انجليزية بغض النظر عن لغة التطبيق.',
+    acceptLabel:'موافق على الشروط والأحكام',
+    back:'رجوع', continueLabel:'التالي', submit:'إرسال الطلب', progressSaved:'تم حفظ التقدم',
+    successHeading:'تم استلام الطلب', successDesc:e=>`إيميل التأكيد في طريقه لـ ${e}، وفريقنا اتأكد عشان يبدأ المعالجة.`,
+    officeSuccessNote:' من فضلك هات الدفع معاك لما تزور المكتب عشان تكمل المعالجة.',
+    keepRef:'احتفظ برقم المرجع ده — هتستخدمه عشان تتابع حالة رخصتك.',
+    cardTitle:'رخصة قيادة دولية', cardSub:'ترجمة رخصة قيادة أجنبية', translationBar:'TRANSLATION OF FOREIGN DRIVER LICENSE',
+    fullNameAddress:'الاسم بالكامل وعنوان الإقامة', countryBirth:'بلد الميلاد', dob:'تاريخ الميلاد', sex:'النوع', hgt:'الطول', eyes:'لون العين', categories:'الفئات', signature:'التوقيع', validDate:'تاريخ الصلاحية',
+    pending:'لسه معلق', countryIssuePending:'بلد الإصدار لسه معلق',
+    validityLabels:{'1y':'سنة واحدة','2y':'سنتين','3y':'3 سنين','5y':'5 سنين','10y':'10 سنين'},
+    shippingLabels:{standard:'عادي · 15-20 يوم عمل', fast:'سريع · 12-15 يوم عمل', express:'إكسبريس · 8-12 يوم عمل', us_standard:'شحن عادي · 15-20 يوم عمل', intl_express:'شحن إكسبريس · 8-12 يوم عمل'},
+    licenseTypeLabels:{A:'A — دراجة نارية', B:'B — سيارة ركاب', C:'C — شاحنة أكتر من 7,700 رطل', D:'D — مركبة أكتر من 8 مقاعد', E:'E — استئناف B أو C أو D مع مقطورة'},
+    eyeColorLabels:{Black:'أسود', Brown:'بني', Blue:'أزرق', Green:'أخضر', Hazel:'عسلي', Gray:'رمادي'},
+    genderLabels:{Male:'ذكر', Female:'أنثى'},
+    contactMethodLabels:{email:'إيميل', phone:'تليفون', whatsapp:'واتساب'},
+    paymentLabels:{full:'دفع كامل', half:'مقدم 50%', office:'الدفع بالمكتب'}
+  }
+};
+function t(key){ return I18N[state.lang][key]; }
+
+const countries = ["Egypt","United States","United Kingdom","Germany","France","Saudi Arabia","United Arab Emirates","Canada","Australia","Italy","Spain","Netherlands","Sweden","Jordan","Qatar","Kuwait","Morocco","India","China","Japan","South Korea","Brazil","Mexico","South Africa","Turkey","Greece","Portugal","Poland","Ireland","Switzerland"];
+const validityPlans = [
+  { id:'1y', years:1, price:39.9 }, { id:'2y', years:2, price:54.9 }, { id:'3y', years:3, price:71.5 },
+  { id:'5y', years:5, price:89 }, { id:'10y', years:10, price:109 }
+];
+function getShippingOptions(country){
+  if(country === 'United States') return [{ id:'us_standard', price:5 }];
+  if(country && country !== 'Egypt') return [{ id:'intl_express', price:40 }];
+  return [{ id:'standard', price:15 }, { id:'fast', price:25 }, { id:'express', price:35 }];
+}
+function effectiveShipCountry(){
+  return state.contact.shipSame ? state.license.country : state.contact.shipCountry;
+}
+const licenseTypeIds = ['A','B','C','D','E'];
+const eyeColorIds = ['Black','Brown','Blue','Green','Hazel','Gray'];
+const contactMethodIds = ['email','phone','whatsapp'];
+const paymentIds = ['full','half','office'];
+const flagSwatches = ['#C6473F,#F2A63B,#111','#1D63A6,#fff,#C6473F','#2E9E63,#fff,#111','#111,#F2A63B,#C6473F','#1D63A6,#fff,#1D63A6','#8B6FF0,#fff,#8B6FF0','#F2A63B,#111,#F2A63B','#C6473F,#fff,#1D63A6','#2E9E63,#F2A63B,#C6473F','#111,#fff,#C6473F','#0A4B40,#F2A63B,#0A4B40','#8B0000,#FFD700,#111','#1D63A6,#FFD700,#1D63A6','#006241,#fff,#C6473F','#4B2E83,#fff,#4B2E83','#111,#C6473F,#FFD700'];
+
+let state = {
+  lang:'en',
+  step: 0,
+  docs: { idPhoto:null, licensePhoto:null, passportPhoto:null, sigMethod:'draw', sigTyped:'', sigDataUrl:null },
+  license: { number:'', name:'', address:'', country:'', birthCountry:'', birthDate:'', gender:'', height:'', eyeColor:'', types:[] },
+  contact: { method:'email', email:'', phone:'', shipSame:true, shipAddress:'', shipCountry:'' },
+  plan: { validity:'1y', shipping:'standard', urgent:false, voucherOn:false, voucherCode:'', payment:'full' },
+  accept:false,
+  submitted:false
+};
+
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+
+function applyChrome(){
+  document.body.dir = state.lang==='ar' ? 'rtl' : 'ltr';
+  document.getElementById('brandName').textContent = t('brandName');
+  document.getElementById('brandSub').textContent = t('brandSub');
+  document.getElementById('pageTitle').textContent = t('title');
+  document.getElementById('pageSubtitle').textContent = t('subtitle');
+  document.getElementById('langToggle').onclick = ()=>{ state.lang = state.lang==='en' ? 'ar' : 'en'; applyChrome(); render(); };
+}
+
+function renderRail(){
+  const railSteps = document.getElementById('railSteps');
+  railSteps.innerHTML='';
+  t('steps').forEach((label,i)=>{
+    const btn = el(`<button class="rail-step ${i<state.step?'done':''} ${i===state.step?'active':''}">
+      <div class="rail-dot">${i<state.step ? '✓' : i+1}</div>
+      <div class="rail-step-label">${label}</div>
+    </button>`);
+    btn.onclick=()=>{ if(i<state.step){ state.step=i; render(); } };
+    railSteps.appendChild(btn);
+  });
+  document.getElementById('railFill').style.width = (state.step/(t('steps').length-1)*100)+'%';
+}
+
+function fmtDate(d){
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  return `${months[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
+}
+function makeBarcode(str){
+  const s = (str && str.length>3 ? str : '100072266').split('');
+  let x=0; const bars=[];
+  s.forEach(c=>{
+    const w = 2 + (c.charCodeAt(0)%4);
+    bars.push(`#111 ${x}px`, `#111 ${x+w}px`); x += w;
+    bars.push(`transparent ${x}px`, `transparent ${x+2}px`); x += 2;
+  });
+  return { css:`linear-gradient(90deg, ${bars.join(', ')})`, width:x };
+}
+
+function idCardMarkup(){
+  return `
+  <div class="idcard">
+    <div class="idcard-header">
+      <div class="idcard-htop">
+        <div class="idcard-titles"><div class="idcard-title-en">INTERNATIONAL DRIVER'S LICENSE</div><div class="idcard-title-sub">Translation of foreign driver license</div></div>
+        <div class="idcard-seal"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M4.5 7.5h15M4.5 16.5h15"/></svg></div>
+      </div>
+    </div>
+    <div class="idcard-flags">${flagSwatches.map(f=>`<div class="idcard-flag" style="background:linear-gradient(90deg,${f})"></div>`).join('')}</div>
+    <div class="idcard-transbar">TRANSLATION OF FOREIGN DRIVER LICENSE</div>
+    <div class="idcard-body">
+      <div class="idcard-photo" id="cardPhoto"><svg viewBox="0 0 24 24" fill="none" stroke="#9AA3AF" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
+      <div class="idcard-info">
+        <div class="idcard-lbl">Full name &amp; residence address</div>
+        <div class="idcard-val" id="cardName">—</div>
+        <div class="idcard-val small" id="cardAddress">—</div>
+        <div class="idcard-val small" id="cardIssueCountry">Country of issue pending</div>
+        <div class="idcard-lbl">Country of birth</div>
+        <div class="idcard-val small" id="cardBirthCountry">—</div>
+        <div class="idcard-row3">
+          <div style="flex:1;"><div class="idcard-lbl">Date of birth</div><div class="idcard-val small" id="cardDob">—</div></div>
+          <div style="flex:1;"><div class="idcard-lbl">Sex</div><div class="idcard-val small" id="cardSex">—</div></div>
+        </div>
+        <div class="idcard-row3">
+          <div style="flex:1;"><div class="idcard-lbl">Hgt</div><div class="idcard-val small" id="cardHgt">—</div></div>
+          <div style="flex:1;"><div class="idcard-lbl">Eyes</div><div class="idcard-val small" id="cardEyes">—</div></div>
+        </div>
+        <div class="idcard-lbl">Categories</div>
+        <div class="idcard-val small" id="cardCategories">—</div>
+        <div class="idcard-lbl">Signature</div>
+        <div id="cardSignature"><span class="idcard-signature-empty">pending</span></div>
+      </div>
+    </div>
+    <div class="idcard-footer"><div class="idcard-barcode" id="cardBarcode"></div><div class="idcard-license-no" id="cardLicenseNo">—</div></div>
+    <div class="idcard-validbar">VALID DATE: <span id="cardValidRange">—</span></div>
+  </div>`;
+}
+
+function updateCard(){
+  const nameEl = document.getElementById('cardName');
+  if(!nameEl) return; // card only exists on the review step
+
+  nameEl.textContent = state.license.name ? state.license.name.toUpperCase() : '—';
+  document.getElementById('cardAddress').textContent = state.license.address || '—';
+  document.getElementById('cardIssueCountry').textContent = state.license.country ? state.license.country.toUpperCase() : 'Country of issue pending';
+  document.getElementById('cardBirthCountry').textContent = state.license.birthCountry || '—';
+  document.getElementById('cardDob').textContent = state.license.birthDate || '—';
+  document.getElementById('cardSex').textContent = state.license.gender ? state.license.gender[0] : '—';
+  document.getElementById('cardHgt').textContent = state.license.height ? (state.license.height+' cm') : '—';
+  document.getElementById('cardEyes').textContent = state.license.eyeColor || '—';
+  document.getElementById('cardCategories').textContent = state.license.types.length ? state.license.types.join(', ') : '—';
+  document.getElementById('cardLicenseNo').textContent = state.license.number || '—';
+
+  const bc = makeBarcode(state.license.number);
+  const barEl = document.getElementById('cardBarcode');
+  barEl.style.backgroundImage = bc.css;
+  barEl.style.width = Math.max(bc.width,120)+'px';
+
+  const plan = validityPlans.find(p=>p.id===state.plan.validity);
+  const issue = new Date();
+  const expiry = new Date(); expiry.setFullYear(issue.getFullYear() + (plan?plan.years:1));
+  document.getElementById('cardValidRange').textContent = `${fmtDate(issue)} - ${fmtDate(expiry)}`;
+
+  if(state.docs.idPhoto){ document.getElementById('cardPhoto').innerHTML = `<img src="${state.docs.idPhoto}">`; }
+
+  const sigEl = document.getElementById('cardSignature');
+  if(state.docs.sigMethod==='type' && state.docs.sigTyped.trim()){
+    sigEl.innerHTML = `<div class="idcard-signature-typed">${state.docs.sigTyped.replace(/</g,'&lt;')}</div>`;
+  } else if(state.docs.sigMethod==='draw' && state.docs.sigDataUrl){
+    sigEl.innerHTML = `<img class="idcard-signature-img" src="${state.docs.sigDataUrl}">`;
+  } else {
+    sigEl.innerHTML = `<span class="idcard-signature-empty">pending</span>`;
+  }
+}
+
+function fileTile(title, sub, key){
+  const filled = state.docs[key];
+  return `<label class="upload-tile ${filled?'filled':''}">
+    <input type="file" accept="image/*" data-key="${key}">
+    ${filled ? `<img class="upload-thumb" src="${filled}"><div class="upload-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>` :
+    `<svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`}
+    <div class="upload-title">${title}</div>
+    <div class="upload-sub">${filled?t('uploadedReplace'):sub}</div>
+  </label>`;
+}
+function optList(arr, current){ return arr.map(c=>`<option ${current===c?'selected':''}>${c}</option>`).join(''); }
+
+function renderPanel(){
+  const panel = document.getElementById('panel');
+  if(state.submitted){
+    const ref = 'IDP-2026-'+Math.floor(100000+Math.random()*899999);
+    panel.innerHTML = `<div class="success-wrap">
+      <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="step-heading">${t('successHeading')}</div>
+      <p class="step-desc">${t('successDesc')(state.contact.email||'—')}${state.plan.payment==='office' ? t('officeSuccessNote') : ''}</p>
+      <div class="ref-code">${ref}</div>
+      <p class="hint">${t('keepRef')}</p>
+    </div>`;
+    return;
+  }
+
+  const s = ['docs','license','contact','plan','review'][state.step];
+  let body = '';
+
+  if(s==='docs'){
+    body = `
+      <div class="step-eyebrow">${t('stepEyebrow')(1)}</div>
+      <div class="step-heading">${t('docsHeading')}</div>
+      <p class="step-desc">${t('docsDesc')}</p>
+      <div class="upload-grid">
+        ${fileTile(t('idPhotoTitle'), t('idPhotoSub'), 'idPhoto')}
+        ${fileTile(t('licensePhotoTitle'), t('licensePhotoSub'), 'licensePhoto')}
+        ${fileTile(t('passportPhotoTitle'), t('passportPhotoSub'), 'passportPhoto')}
+      </div>
+      <div class="field" style="margin-top:18px;">
+        <label>${t('signatureLabel')} <span class="req">*</span></label>
+        <div class="sig-tabs">
+          <div class="sig-tab ${state.docs.sigMethod==='draw'?'active':''}" data-sig="draw">${t('drawIt')}</div>
+          <div class="sig-tab ${state.docs.sigMethod==='type'?'active':''}" data-sig="type">${t('typeIt')}</div>
+        </div>
+        ${state.docs.sigMethod==='draw' ? `
+          <div class="sig-canvas-wrap"><canvas id="sigCanvas"></canvas><div class="sig-clear" id="sigClear">${t('clear')}</div></div>
+          <div class="hint">${t('sigDrawHint')}</div>
+        ` : `
+          <div class="field sig-typed" style="margin-bottom:0;"><input type="text" id="sigTyped" placeholder="${t('typeYourName')}" value="${state.docs.sigTyped}"></div>
+          <div class="hint">${t('sigTypeHint')}</div>
+        `}
+      </div>
+    `;
+  }
+
+  if(s==='license'){
+    body = `
+      <div class="step-eyebrow">${t('stepEyebrow')(2)}</div>
+      <div class="step-heading">${t('licenseHeading')}</div>
+      <p class="step-desc">${t('licenseDesc')}</p>
+      <div class="field"><label>${t('licenseNumberLabel')} <span class="req">*</span></label><input type="text" id="f_number" placeholder="${t('licenseNumberPh')}" value="${state.license.number}"></div>
+      <div class="field"><label>${t('fullNameLabel')} <span class="req">*</span></label><input type="text" id="f_name" placeholder="${t('fullNamePh')}" value="${state.license.name}"></div>
+      <div class="field"><label>${t('residenceAddressLabel')} <span class="req">*</span></label><input type="text" id="f_address" placeholder="${t('residenceAddressPh')}" value="${state.license.address}"></div>
+      <div class="field"><label>${t('countryIssueLabel')} <span class="req">*</span></label>
+        <select id="f_country"><option value="">${t('selectCountry')}</option>${optList(countries, state.license.country)}</select>
+        <div class="hint">${t('countryIssueHint')}</div></div>
+      <div class="grid2">
+        <div class="field"><label>${t('birthCountryLabel')} <span class="req">*</span></label><select id="f_birthCountry"><option value="">${t('selectCountry')}</option>${optList(countries, state.license.birthCountry)}</select></div>
+        <div class="field"><label>${t('birthDateLabel')} <span class="req">*</span></label><input type="date" id="f_birthDate" value="${state.license.birthDate}"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>${t('genderLabel')} <span class="req">*</span></label>
+          <select id="f_gender"><option value="">${t('select')}</option><option value="Male" ${state.license.gender==='Male'?'selected':''}>${t('genderLabels').Male}</option><option value="Female" ${state.license.gender==='Female'?'selected':''}>${t('genderLabels').Female}</option></select></div>
+        <div class="field"><label>${t('heightLabel')} <span class="req">*</span></label><input type="number" id="f_height" placeholder="175" value="${state.license.height}"></div>
+      </div>
+      <div class="field"><label>${t('eyeColorLabel')} <span class="req">*</span></label>
+        <select id="f_eyeColor"><option value="">${t('select')}</option>${eyeColorIds.map(c=>`<option value="${c}" ${state.license.eyeColor===c?'selected':''}>${t('eyeColorLabels')[c]}</option>`).join('')}</select></div>
+      <div class="field"><label>${t('categoriesLabel')} <span class="req">*</span></label>
+        <div class="chip-row" id="licenseChips">${licenseTypeIds.map(id=>`<div class="chip ${state.license.types.includes(id)?'selected':''}" data-type="${id}">${t('licenseTypeLabels')[id]}</div>`).join('')}</div>
+        <div class="multi-hint">${t('categoriesHint')}</div>
+      </div>
+    `;
+  }
+
+  if(s==='contact'){
+    body = `
+      <div class="step-eyebrow">${t('stepEyebrow')(3)}</div>
+      <div class="step-heading">${t('contactHeading')}</div>
+      <p class="step-desc">${t('contactDesc')}</p>
+      <div class="field"><label>${t('contactMethodLabel')} <span class="req">*</span></label>
+        <div class="chip-row">${contactMethodIds.map(m=>`<div class="chip ${state.contact.method===m?'selected':''}" data-contact="${m}">${t('contactMethodLabels')[m]}</div>`).join('')}</div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>${t('emailLabel')} <span class="req">*</span></label><input type="email" id="f_email" placeholder="${t('emailPh')}" value="${state.contact.email}"></div>
+        <div class="field"><label>${t('phoneLabel')} <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="${t('phonePh')}" value="${state.contact.phone}"></div>
+      </div>
+      <div class="switch-row"><span>${t('shipSameLabel')}</span><div class="switch ${state.contact.shipSame?'on':''}" id="shipSwitch"></div></div>
+      ${!state.contact.shipSame ? `
+        <div class="field"><label>${t('shipAddressLabel')} <span class="req">*</span></label><input type="text" id="f_shipAddress" placeholder="${t('residenceAddressPh')}" value="${state.contact.shipAddress}"></div>
+        <div class="field"><label>${t('shipCountryLabel')} <span class="req">*</span></label><select id="f_shipCountry"><option value="">${t('selectCountry')}</option>${optList(countries, state.contact.shipCountry)}</select></div>
+      ` : `<div class="hint" style="margin-top:-8px;margin-bottom:14px;">${state.license.address ? t('usingAddress')(state.license.address) : t('fillResidenceHint')}</div>`}
+    `;
+  }
+
+  if(s==='plan'){
+    const plan = validityPlans.find(p=>p.id===state.plan.validity);
+    const shipCountry = effectiveShipCountry();
+    const shippingOptions = getShippingOptions(shipCountry);
+    if(!shippingOptions.some(p=>p.id===state.plan.shipping)){ state.plan.shipping = shippingOptions[0].id; }
+    const ship = shippingOptions.find(p=>p.id===state.plan.shipping);
+    const urgent = state.plan.urgent ? 25 : 0;
+    const subtotal = (plan?.price||0) + (ship?.price||0) + urgent;
+    const discount = state.plan.voucherOn && state.plan.voucherCode.trim().toUpperCase()==='SAVE10' ? subtotal*0.1 : 0;
+    const total = subtotal - discount;
+    const dueNow = state.plan.payment==='half' ? total/2 : total;
+    body = `
+      <div class="step-eyebrow">${t('stepEyebrow')(4)}</div>
+      <div class="step-heading">${t('planHeading')}</div>
+      <p class="step-desc">${t('planDesc')}</p>
+      <div class="field"><label>${t('validityLabel')} <span class="req">*</span></label>
+        <div class="plan-grid">${validityPlans.map(p=>`<div class="plan-card ${state.plan.validity===p.id?'selected':''}" data-validity="${p.id}"><div class="plan-years">${t('validityLabels')[p.id]}</div><div class="plan-price">$${p.price}</div></div>`).join('')}</div>
+      </div>
+      <div class="field"><label>${t('shippingLabel')} <span class="req">*</span></label>
+        <div class="plan-grid">${shippingOptions.map(p=>`<div class="plan-card ${state.plan.shipping===p.id?'selected':''}" data-shipping="${p.id}" ${shippingOptions.length===1?'style="grid-column:1/-1"':''}><div class="plan-years">$${p.price}</div><div class="plan-price" style="font-size:11.5px;color:#5B6472;font-weight:500;">${t('shippingLabels')[p.id]}</div></div>`).join('')}</div>
+      </div>
+      <div class="switch-row"><span>${t('urgentLabel')}</span><div class="switch ${state.plan.urgent?'on':''}" id="urgentSwitch"></div></div>
+      <div class="switch-row"><span>${t('voucherLabel')}</span><div class="switch ${state.plan.voucherOn?'on':''}" id="voucherSwitch"></div></div>
+      ${state.plan.voucherOn ? `<div class="field"><input type="text" id="f_voucher" placeholder="${t('voucherPh')}" value="${state.plan.voucherCode}" style="text-transform:uppercase;"></div>` : ''}
+      <div class="field"><label>${t('paymentLabel')} <span class="req">*</span></label>
+        <div class="chip-row">${paymentIds.map(id=>`<div class="chip ${state.plan.payment===id?'selected':''}" data-payment="${id}">${t('paymentLabels')[id]}</div>`).join('')}</div>
+      </div>
+      <div class="summary-box">
+        <div class="summary-row"><span>${t('permitLine')(t('validityLabels')[state.plan.validity])}</span><span>$${plan?.price.toFixed(2)}</span></div>
+        <div class="summary-row"><span>${t('shippingLine')}</span><span>$${ship?.price.toFixed(2)}</span></div>
+        ${urgent ? `<div class="summary-row"><span>${t('urgentLine')}</span><span>$${urgent.toFixed(2)}</span></div>` : ''}
+        ${discount ? `<div class="summary-row"><span>${t('voucherLine')}</span><span>-$${discount.toFixed(2)}</span></div>` : ''}
+        <div class="summary-row total"><span>${state.plan.payment==='half' ? t('dueNowHalf') : (state.plan.payment==='office' ? t('payableOffice') : t('totalDue'))}</span><span>$${(state.plan.payment==='office' ? total : dueNow).toFixed(2)}</span></div>
+        ${state.plan.payment==='office' ? `<div class="summary-row" style="color:#8B93A3;">${t('officeNote')}</div>` : ''}
+      </div>
+    `;
+  }
+
+  if(s==='review'){
+    body = `
+      <div class="step-eyebrow">${t('stepEyebrow')(5)}</div>
+      <div class="step-heading">${t('reviewHeading')}</div>
+      <p class="step-desc">${t('reviewDesc')}</p>
+      <div class="idcard-wrap">${idCardMarkup()}</div>
+      <div class="idcard-note">${t('officialNote')}</div>
+      <div class="chip-row" style="margin-bottom:16px;">
+        <div class="chip" data-goto="0">${t('editDocs')}</div>
+        <div class="chip" data-goto="1">${t('editDetails')}</div>
+        <div class="chip" data-goto="2">${t('editContact')}</div>
+        <div class="chip" data-goto="3">${t('editPlan')}</div>
+      </div>
+      <p class="hint" style="margin-bottom:16px;">${t('sendingTo')(state.contact.email||'—', state.contact.phone||'—')}</p>
+      <div class="switch-row"><span>${t('acceptLabel')}</span><div class="switch ${state.accept?'on':''}" id="acceptSwitch"></div></div>
+    `;
+  }
+
+  panel.innerHTML = `${body}
+    <div class="nav-row">
+      ${state.step>0 ? `<button class="btn btn-ghost" id="backBtn">${t('back')}</button>` : `<span></span>`}
+      <div class="save-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>${t('progressSaved')}</div>
+      ${state.step<4 ? `<button class="btn btn-primary" id="nextBtn">${t('continueLabel')}</button>` : `<button class="btn btn-primary" id="submitBtn" ${!state.accept?'disabled':''}>${t('submit')}</button>`}
+    </div>
+  `;
+  attachHandlers(s);
+  if(s==='docs' && state.docs.sigMethod==='draw'){ initCanvas(); }
+}
+
+function initCanvas(){
+  const canvas = document.getElementById('sigCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  function resize(){ const r=canvas.getBoundingClientRect(); canvas.width=r.width*2; canvas.height=r.height*2; ctx.scale(2,2); ctx.strokeStyle='#0B1420'; ctx.lineWidth=2.2; ctx.lineCap='round'; }
+  resize();
+  let drawing=false;
+  function pos(e){ const r=canvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left, y:t.clientY-r.top}; }
+  function start(e){ drawing=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+  function move(e){ if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
+  function end(){ if(!drawing) return; drawing=false; state.docs.sigDataUrl = canvas.toDataURL('image/png'); }
+  canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
+  canvas.addEventListener('touchstart',start); canvas.addEventListener('touchmove',move); canvas.addEventListener('touchend',end);
+  document.getElementById('sigClear').onclick=()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); state.docs.sigDataUrl=null; };
+}
+
+function attachHandlers(s){
+  const backBtn = document.getElementById('backBtn'); if(backBtn) backBtn.onclick=()=>{ state.step--; render(); };
+  const nextBtn = document.getElementById('nextBtn'); if(nextBtn) nextBtn.onclick=()=>{ state.step++; render(); };
+  const submitBtn = document.getElementById('submitBtn'); if(submitBtn) submitBtn.onclick=()=>{ if(state.accept){ state.submitted=true; render(); } };
+  document.querySelectorAll('[data-goto]').forEach(b=>{ b.onclick=()=>{ state.step=parseInt(b.dataset.goto); render(); }; });
+
+  if(s==='docs'){
+    document.querySelectorAll('.upload-tile input').forEach(inp=>{
+      inp.onchange=(e)=>{ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ state.docs[inp.dataset.key]=reader.result; render(); }; reader.readAsDataURL(file); };
+    });
+    document.querySelectorAll('.sig-tab').forEach(tab=>{ tab.onclick=()=>{ state.docs.sigMethod=tab.dataset.sig; render(); }; });
+    const sigTyped = document.getElementById('sigTyped'); if(sigTyped) sigTyped.oninput=(e)=>{ state.docs.sigTyped=e.target.value; };
+  }
+
+  if(s==='license'){
+    ['number','name','address','country','birthCountry','birthDate','gender','height','eyeColor'].forEach(k=>{
+      const f = document.getElementById('f_'+k);
+      if(f) f.oninput = f.onchange = (e)=>{ state.license[k]=e.target.value; };
+    });
+    document.querySelectorAll('#licenseChips .chip').forEach(c=>{
+      c.onclick=()=>{ const idx=state.license.types.indexOf(c.dataset.type); if(idx>=0) state.license.types.splice(idx,1); else state.license.types.push(c.dataset.type); render(); };
+    });
+  }
+
+  if(s==='contact'){
+    document.querySelectorAll('[data-contact]').forEach(c=>{ c.onclick=()=>{ state.contact.method=c.dataset.contact; render(); }; });
+    const em=document.getElementById('f_email'); if(em) em.oninput=(e)=>{ state.contact.email=e.target.value; };
+    const ph=document.getElementById('f_phone'); if(ph) ph.oninput=(e)=>{ state.contact.phone=e.target.value; };
+    const sa=document.getElementById('f_shipAddress'); if(sa) sa.oninput=(e)=>{ state.contact.shipAddress=e.target.value; };
+    const sc=document.getElementById('f_shipCountry'); if(sc) sc.onchange=(e)=>{ state.contact.shipCountry=e.target.value; };
+    const sw=document.getElementById('shipSwitch'); if(sw) sw.onclick=()=>{ state.contact.shipSame=!state.contact.shipSame; render(); };
+  }
+
+  if(s==='plan'){
+    document.querySelectorAll('[data-validity]').forEach(c=>{ c.onclick=()=>{ state.plan.validity=c.dataset.validity; render(); }; });
+    document.querySelectorAll('[data-shipping]').forEach(c=>{ c.onclick=()=>{ state.plan.shipping=c.dataset.shipping; render(); }; });
+    document.querySelectorAll('[data-payment]').forEach(c=>{ c.onclick=()=>{ state.plan.payment=c.dataset.payment; render(); }; });
+    const us=document.getElementById('urgentSwitch'); if(us) us.onclick=()=>{ state.plan.urgent=!state.plan.urgent; render(); };
+    const vs=document.getElementById('voucherSwitch'); if(vs) vs.onclick=()=>{ state.plan.voucherOn=!state.plan.voucherOn; render(); };
+    const vc=document.getElementById('f_voucher'); if(vc) vc.oninput=(e)=>{ state.plan.voucherCode=e.target.value; };
+  }
+
+  if(s==='review'){
+    const as=document.getElementById('acceptSwitch'); if(as) as.onclick=()=>{ state.accept=!state.accept; render(); };
+  }
+}
+
+function render(){ renderRail(); renderPanel(); updateCard(); window.scrollTo({top:0, behavior:'smooth'}); }
+applyChrome();
+render();
+</script>
+</body>
+</html>
