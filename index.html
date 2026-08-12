@@ -662,11 +662,11 @@ function attachHandlers(s){
   }
 
   if(s==='review'){
-    const as=document.getElementById('acceptSwitch'); if(as) as.onclick=()=>{ state.accept=!state.accept; render(); };
+    const as=document.getElementById('acceptSwitch'); if(as) as.onclick=()=>{ state.accept=!state.accept; window.scrollTo({top:0, behavior:'smooth'}); render(); };
   }
 }
 
-function render(){ renderRail(); renderPanel(); updateCard(); }
+function render(){ renderRail(); renderPanel(); updateCard();  }
 applyChrome();
 render();
 </script>
